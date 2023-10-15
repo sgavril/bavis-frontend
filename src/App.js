@@ -34,6 +34,12 @@ function App() {
     }
   ];
 
+  // Custom component: takes a prop and display, log to console
+  function Greeting(props) {
+    console.log("Greeting Component's props: ", props);
+    return <h1>Hello, {props.name}!</h1>;
+  }
+
   // const [searchTerm, setSearchTerm] = React.useState(
   //   localStorage.getItem('search') || 'frequent-words');
   // Trying a custom react hook
@@ -64,9 +70,10 @@ function App() {
       {/* B - callback function is used elsewhere */}
       <Search search={searchTerm} onSearch={handleSearch} searchTerm={searchTerm}/>
 
+      <List list={searchedAlgorithms}/>
+
       <hr />
 
-      <List list={searchedAlgorithms}/>
     </div>
   );
 }
