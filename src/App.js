@@ -2,6 +2,18 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+const useSemiPersistentState = (key, initialState) => {
+  const [value, setValue] = React.useState(
+    localStorage.getItem('key') || initialState
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem(key, value);
+  }, [value, key]);
+
+  return [value, setValue];
+};
+
 function App() {
   const algorithms = [
     {
@@ -22,7 +34,17 @@ function App() {
     }
   ];
 
-  const [searchTerm, setSearchTerm] = React.useState('enter search term...');
+  // const [searchTerm, setSearchTerm] = React.useState(
+  //   localStorage.getItem('search') || 'frequent-words');
+  // Trying a custom react hook
+  const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'frequent')
+
+  // Handle side-effects at a centralized place
+  // React.useEffect(() => {                       // useEffect takes two args:
+  //   localStorage.setItem('search', searchTerm); // first is a fn that runs side-effect
+  // }, [searchTerm]);                             // side-effect runs when 2nd arg changes
+
+
 
   // A - callback function is introduced
   const handleSearch = (event) => {
@@ -66,19 +88,19 @@ const Search = ({ search, onSearch }) => (
 const List = ({ list }) => (
   <ul>
     {list.map((item) => (
-      <Item key={item.objectID} {...item}/>
+      <Item key={item.objectID} item={item}/>
     ))}
   </ul>
 );
 
-const Item = ({ title, url, author, num_comments, points }) => (
+const Item = ({ item }) => (
   <li>
     <span>
-      <a href={url}>{title}</a>
+      <a href={item.url}>{item.title}</a>
     </span>
-    <span>{author}</span>
-    <span>{num_comments}</span>
-    <span>{points}</span>
+    <span>{item.author}</span>
+    <span>{item.num_comments}</span>
+    <span>{item.points}</span>
   </li>
 );
 
